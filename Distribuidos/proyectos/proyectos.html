@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+            <a href="proyectos.html" id="titulo">Gestión de planificación</a>
+            <form id="create-project-form" method="post" action="crear_proyecto.php" onsubmit="return validateForm()">
+                <input type="text" name="projectName" id="projectName" placeholder="Nombre del proyecto">
+                <button type="submit" id="create-project-btn">Agregar Nuevo Proyecto</button>
+                <button type="button" id="modify-project-btn" onclick="modifyProject()">Modificar</button>
+            </form>
+    </header>
+
+    <main>
+        <div id="projects-container">
+            <!-- Aquí se agregarán los proyectos -->
+        </div>
+    </main>
+
+
+
+
+
+<div class="task-list">
+    <!-- Resto del contenido -->
+</div>
+
+<script>
+    let selectedProjectId = null;
+
+    function validateForm() {
+        const projectNameInput = document.getElementById('projectName');
+        const projectName = projectNameInput.value.trim();
+
+        if (!projectName) {
+            alert('Por favor, ingrese un nombre para el proyecto.');
+            return false;
+        }
+
+        return true;
+    }
+
+    function modifyProject() {
+        if (!selectedProjectId) {
+            alert('Por favor, seleccione un proyecto para modificar.');
+            return;
+        }
+
+        // Aquí puedes abrir el diálogo de modificación del proyecto seleccionado
+        console.log('Proyecto seleccionado para modificar:', selectedProjectId);
+    }
+
+    fetch('obtener_proyectos.php')
+        .then(response => response.json())
+        .then(data => {
+            const projectsContainer = document.getElementById('projects-container');
+            projectsContainer.innerHTML = '';
+            data.forEach(project => {
+                const projectItem = document.createElement('div');
+                projectItem.classList.add('project-item');
+                projectItem.textContent = project.nombre;
+                projectItem.dataset.id = project.id;
+                projectItem.addEventListener('click', () => redirectToTasks(project.id));
+                projectsContainer.appendChild(projectItem);
+            });
+        })
+        .catch(error => console.error('Error al obtener proyectos:', error));
+
+    function selectProject(projectId) {
+        const projectItems = document.querySelectorAll('.project-item');
+        projectItems.forEach(item => {
+            item.classList.remove('selected');
+        });
+        selectedProjectId = projectId;
+        const selectedProjectItem = document.querySelector(`.project-item[data-id="${projectId}"]`);
+        selectedProjectItem.classList.add('selected');
+    }
+
+    function redirectToTasks(projectId) {
+    window.location.href = `../tareas/tareas.html?projectId=${projectId}`;
+}
+
+</script>
+
+</body>
+</html>
