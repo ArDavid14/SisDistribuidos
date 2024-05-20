@@ -1,44 +1,40 @@
 <?php
 if (isset($_GET['projectId'])) {
-    // Obtener el ID de la planta desde la URL
+    // Obtener el ID del proyecto desde la URL
     $idproyecto = $_GET['projectId'];
-    // Configurar la conexión a la base de datos
-    $servername = "localhost"; // Cambia esto por la dirección de tu servidor MySQL
-    $username = "root"; // Cambia esto por tu nombre de usuario de MySQL
-    $password = ""; // Cambia esto por tu contraseña de MySQL
-    $dbname = "planificacion";
 
-    // Crear la conexión
-    $conn = new mysqli($servername, $username, $password, $dbname);
+    // Configuración de la conexión a la base de datos Oracle
+    $servername = "192.168.1.13"; // Dirección IP del servidor Oracle
+    $port = "1521"; // Puerto de tu servidor Oracle
+    $service_name = "free"; // Nombre del servicio Oracle (SID)
+    $username = "Hr"; // Nombre de usuario de Oracle
+    $password = "123456789"; // Contraseña de Oracle
 
-    // Verificar la conexión
-    if ($conn->connect_error) {
-    die("Conexión fallida: " . $conn->connect_error);
+    // Cadena de conexión utilizando la dirección IP, el puerto y el nombre del servicio
+    $conn = oci_connect($username, $password, "(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=$servername)(PORT=$port))(CONNECT_DATA=(SERVICE_NAME=$service_name)))");
+
+    if (!$conn) {
+        $e = oci_error();
+        die("Conexión fallida: " . $e['message']);
     }
 
-    // Preparar la consulta SQL para obtener los proyectos
-    $sql = "SELECT * FROM tareas WHERE proyecto_id = $idproyecto";
-    $result = $conn->query($sql);
+    // Preparar la consulta SQL para obtener las tareas del proyecto
+    $sql = "SELECT * FROM tarea WHERE fk_id_proyecto = $idproyecto";
+    $stid = oci_parse($conn, $sql);
+    oci_execute($stid);
 
-    // Verificar si se encontraron proyectos
-    if ($result->num_rows > 0) {
-    // Crear un array para almacenar los proyectos
-    $projects = array();
-
-    // Iterar sobre los resultados y agregarlos al array
-    while ($row = $result->fetch_assoc()) {
-        $projects[] = $row;
+    // Verificar si se encontraron tareas
+    $tasks = array();
+    while ($row = oci_fetch_assoc($stid)) {
+        $tasks[] = $row;
     }
 
-    // Devolver los proyectos en formato JSON
-    echo json_encode($projects);
-    } else {
-    echo json_encode(array()); // Devolver un array vacío si no se encontraron proyectos
-    }
+    // Devolver las tareas en formato JSON
+    echo json_encode($tasks);
 
-    // Cerrar la conexión
-    $conn->close();
-
+    // Liberar los recursos
+    oci_free_statement($stid);
+    oci_close($conn);
 } else {
     echo json_encode(array('error' => 'No se ha proporcionado un ID.'));
 }

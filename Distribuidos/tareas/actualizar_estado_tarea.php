@@ -1,37 +1,34 @@
 <?php
-// Configurar la conexión a la base de datos
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "planificacion";
-
-// Crear la conexión
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-// Verificar la conexión
-if ($conn->connect_error) {
-    die("Conexión fallida: " . $conn->connect_error);
-}
-
 // Obtener los datos de la solicitud AJAX
 $taskId = $_POST['task_id'];
 $newState = $_POST['new_state'];
 
-echo "Task ID: " . $taskId . ", New State: " . $newState; // Para depuración
+// Configuración de la conexión a la base de datos Oracle
+$servername = "192.168.1.13"; // Dirección IP del servidor Oracle
+$port = "1521"; // Puerto de tu servidor Oracle
+$service_name = "free"; // Nombre del servicio Oracle (SID)
+$username = "Hr"; // Nombre de usuario de Oracle
+$password = "123456789"; // Contraseña de Oracle
 
-// Prevenir inyección SQL
-$taskId = $conn->real_escape_string($taskId);
-$newState = $conn->real_escape_string($newState);
+// Cadena de conexión utilizando la dirección IP, el puerto y el nombre del servicio
+$conn = oci_connect($username, $password, "(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=$servername)(PORT=$port))(CONNECT_DATA=(SERVICE_NAME=$service_name)))");
+
+if (!$conn) {
+    $e = oci_error();
+    die("Conexión fallida: " . $e['message']);
+}
 
 // Preparar la consulta SQL para actualizar el estado de la tarea específica
-$sql = "UPDATE tareas SET estado='$newState' WHERE id='$taskId'";
+$sql = "UPDATE tarea SET estado='$newState' WHERE id_tarea='$taskId'";
 
-if ($conn->query($sql) === TRUE) {
+$stid = oci_parse($conn, $sql);
+if (oci_execute($stid)) {
     echo "El estado de la tarea se actualizó correctamente";
 } else {
-    echo "Error al actualizar el estado de la tarea: " . $conn->error;
+    $e = oci_error($stid);
+    echo "Error al actualizar el estado de la tarea: " . $e['message'];
 }
 
 // Cerrar la conexión
-$conn->close();
+oci_close($conn);
 ?>

@@ -1,33 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestión de Planificación</title>
-    <link rel="stylesheet" href="stylespro.css">
-</head>
-<body>
-    <header>
-        <a href="proyectos.html" id="titulo">Gestión de planificación</a>
-        <!-- Formulario para agregar un nuevo proyecto -->
-        <form id="create-project-form" method="post" action="crear_proyecto.php" onsubmit="return validateForm()">
-            <input type="text" name="projectName" id="projectName" placeholder="Nombre del proyecto">
-            <button type="submit" id="create-project-btn">Agregar Nuevo Proyecto</button>
-        </form>
-    </header>
-
-    <main>
-        <div id="projects-container">
-            <!-- Aquí se agregarán los proyectos -->
-        </div>
-    </main>
-
-    <div class="task-list">
-        <!-- Resto del contenido -->
-    </div>
-
-    <script>
-       document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', function () {
     let selectedProjectId = null;
 
     function validateForm() {
@@ -44,19 +15,26 @@
 
     function modifyProject(projectId) {
         selectedProjectId = projectId;
-        const newProjectName = prompt('Ingrese el nuevo nombre del proyecto:');
-        
-        if (newProjectName === null) {
-            return; // Si el usuario cancela el prompt
-        }
+        const modifyModal = document.getElementById('modifyProjectModal');
+        modifyModal.style.display = 'block';
+    }
 
-        if (newProjectName.trim() === '') {
-            alert('El nombre del proyecto no puede estar vacío.');
+    function closeModifyModal() {
+        const modifyModal = document.getElementById('modifyProjectModal');
+        modifyModal.style.display = 'none';
+    }
+
+    function confirmModifyProject() {
+        const newProjectNameInput = document.getElementById('newProjectName');
+        const newProjectName = newProjectNameInput.value.trim();
+
+        if (!newProjectName) {
+            alert('Por favor, ingrese un nuevo nombre para el proyecto.');
             return;
         }
 
         if (confirm('¿Estás seguro de que deseas cambiar el nombre del proyecto?')) {
-            fetch(`modificar_proyecto.php`, {
+            fetch('modificar_proyecto.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded'
@@ -67,6 +45,7 @@
             .then(data => {
                 if (data.message) {
                     alert(data.message);
+                    closeModifyModal();
                     fetchProjects();
                 } else {
                     alert('Error al modificar el proyecto.');
@@ -154,6 +133,3 @@
         window.location.href = `../tareas/tareas.html?projectId=${projectId}`;
     }
 });
-    </script>
-</body>
-</html>
