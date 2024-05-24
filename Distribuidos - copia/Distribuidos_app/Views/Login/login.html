@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>Iniciar sesión</title>
+    <link rel="stylesheet" type="text/css" href="../../../Public/Estatic/styles_login.css">
+    <style>
+        /* Estilos para la alerta personalizada */
+        .alerta-personalizada {
+            position: fixed;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #127dff;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 3px;
+            box-shadow: 0px 0px 5px 0px #ccc;
+            z-index: 999;
+        }
+    </style>
+</head>
+
+<body>
+    <section>
+        <form action="../../Models/Login/login.php" method="post">
+            <h1>Inicio</h1>
+            <!-- Contenedor del mensaje de error -->
+            <div id="error-message"></div>
+            <div class="inputbox">
+                <ion-icon name="person-outline"></ion-icon>
+                <input type="text" id="nombre" name="nombre" required>
+                <label class="user" for="nombre">Nombre de Empleado:</label>
+            </div>
+            <div class="inputbox">
+                <ion-icon name="card-outline"></ion-icon>
+                <input type="password" id="cedula" name="cedula" required>
+                <label class="pass" for="cedula">Cédula:</label>
+            </div>
+            <button type="submit">Iniciar sesión</button>
+        </form>
+        <script>
+            // Función para obtener el mensaje de error de la URL
+            function getErrorMessage() {
+                const urlParams = new URLSearchParams(window.location.search);
+                const error_message = urlParams.get("error_message");
+                return error_message;
+            }
+
+            // Función para mostrar el mensaje de error en una alerta personalizada
+            function mostrarAlerta(mensaje) {
+                var alerta = document.createElement("div");
+                alerta.className = "alerta-personalizada";
+                alerta.textContent = mensaje;
+                document.body.appendChild(alerta);
+                setTimeout(function () {
+                    document.body.removeChild(alerta);
+                }, 3000); // La alerta se eliminará después de 3 segundos (ajusta este valor según tus necesidades)
+            }
+
+            // Función para mostrar el mensaje de error y borrarlo después de 3 segundos
+            function displayErrorMessage() {
+                const errorMessage = getErrorMessage();
+                if (errorMessage) {
+                    mostrarAlerta(errorMessage);
+                }
+            }
+
+            // Llama a la función para mostrar el mensaje de error
+            displayErrorMessage();
+        </script>
+    </section>
+</body>
+
+</html>

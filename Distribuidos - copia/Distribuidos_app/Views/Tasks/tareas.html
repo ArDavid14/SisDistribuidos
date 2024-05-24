@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="../../../Public/Estatic/stylestask.css">
+</head>
+<body>
+
+<header>
+    <h1>Lista de Tareas</h1>
+    <button id="addTaskBtn">Agregar Tarea</button>
+    <button id="backBtn">Volver</button> <!-- Botón de volver -->
+    <button id="logoutBtn" class="btn-logout">Cerrar sesión</button> <!-- Botón de cerrar sesión -->
+</header>
+
+<div class="task-list">
+    <div class="task-item" id="todo">
+        <h3 class="task-title">Por Hacer</h3>
+        <ul class="task-items"></ul>
+    </div>
+    <div class="task-item" id="in-progress">
+        <h3 class="task-title">En Proceso</h3>
+        <ul class="task-items"></ul>
+    </div>
+    <div class="task-item" id="done">
+        <h3 class="task-title">Hecho</h3>
+        <ul class="task-items"></ul>
+    </div>
+</div>
+
+<div id="taskModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Ingrese el nombre de la tarea:</h2>
+        <input type="text" id="taskNameInput">
+        <h2>Ingrese la descripción de la tarea:</h2>
+        <textarea id="taskDescriptionInput"></textarea>
+        <button id="addTaskModalBtn">Agregar</button>
+    </div>
+</div>
+
+<div id="modifyModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Modificar Tarea</h2>
+        <input type="text" id="modifyTaskNameInput">
+        <h2>Modificar la descripción de la tarea:</h2>
+        <textarea id="modifyTaskDescriptionInput"></textarea>
+        <button id="modifyTaskModalBtn">Guardar Cambios</button>
+    </div>
+</div>
+
+<script src="../../Controllers/script_tasks.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Planificación</title>
+    <link rel="stylesheet" href="../../../Public/Estatic/stylespro.css">
+</head>
+<body>
+    <header>
+        <a href="proyectos.html" id="titulo">Gestión de planificación</a>
+        <form id="create-project-form" method="post" action=".././../Models/Proyects/crear_proyecto.php" onsubmit="return validateForm()">
+            <input type="text" name="projectName" id="projectName" placeholder="Nombre del proyecto">
+            <button type="submit" id="create-project-btn">Agregar Nuevo Proyecto</button>
+        </form>
+        <button id="logoutBtn" class="btn-logout">Cerrar sesión</button> <!-- Botón de cerrar sesión -->
+    </header>
+
+    <main>
+        <div id="projects-container">
+            <!-- Aquí se agregarán los proyectos -->
+        </div>
+    </main>
+
+    <div class="task-list">
+        <!-- Resto del contenido -->
+    </div>
+
+    <script src="../../Controllers/script_proyectos.js"></script>
+    <script>
+        function validateForm() {
+            const projectNameInput = document.getElementById('projectName');
+            const projectName = projectNameInput.value.trim();
+
+            if (!projectName) {
+                alert('Por favor, ingrese un nombre para el proyecto.');
+                return false; // Evita que el formulario se envíe
+            }
+
+            return true; // Permite que el formulario se envíe
+        }
+    </script>
+</body>
+</html>
